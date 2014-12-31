@@ -6,6 +6,7 @@ public class Hand {
 	static ArrayList<Card> outs = new ArrayList<Card>();
 	static ArrayList<String> stringOuts = new ArrayList<String>();
 	static Card[] cards = new Card[52];
+	static Card[] board = new Card[5];
 	static final Value[] VALUES = Value.values();
 	static final Suit[] SUITS = Suit.values();
 	static Scanner scan = new Scanner(System.in);
@@ -46,7 +47,7 @@ public class Hand {
 
 	}
 	public void flop(Card card1, Card card2, Card card3) {
-
+		
 	}
 	public void turn(Card card4) {
 
