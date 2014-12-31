@@ -137,8 +137,14 @@ public class Hand {
 	}
 	public static void checkFlush(Card card1, Card card2) {
 		stringOuts.add("Flush Outs : ");
-
-
+		Card[] current = {card1, card2};
+		for (Card car : current) {
+			for (int i = 0; i < 52; i++) {
+				if (cardSuitEqual(cards[i], car)) {
+					addOut(cards[i]);
+				}
+			}
+		}
 	}
 	public static void checkFull(Card card1, Card card2) {
 		stringOuts.add("Full House Outs : ");
