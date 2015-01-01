@@ -4,6 +4,14 @@ import java.util.Scanner;
 public class Hand {
 	static ArrayList<Player> players = new ArrayList<Player>();
 	static ArrayList<Card> outs = new ArrayList<Card>();
+	static ArrayList<Card> pairOuts = new ArrayList<Card>();
+	static ArrayList<Card> tripOuts = new ArrayList<Card>();
+	static ArrayList<Card> straightOuts = new ArrayList<Card>();
+	static ArrayList<Card> flushOuts = new ArrayList<Card>();
+	static ArrayList<Card> fullOuts = new ArrayList<Card>();
+	static ArrayList<Card> quadOuts = new ArrayList<Card>();
+	static ArrayList<Card> straightFlushOuts = new ArrayList<Card>();
+	static ArrayList<Card> royalFlushOuts = new ArrayList<Card>();
 	static ArrayList<String> stringOuts = new ArrayList<String>();
 	static Card[] cards = new Card[52];
 	static Card[] board = new Card[5];
@@ -14,7 +22,7 @@ public class Hand {
 		//initPlayers();
 		initCards();
 
-		int BigBlind = 0;
+		//int BigBlind = 0;
 		//System.out.print("\nBig Blind? : ");
 		//BigBlind = scan.nextInt();
 
@@ -47,7 +55,7 @@ public class Hand {
 
 	}
 	public void flop(Card card1, Card card2, Card card3) {
-		
+
 	}
 	public void turn(Card card4) {
 
@@ -58,9 +66,13 @@ public class Hand {
 	public static void check(Card card1, Card card2) {
 		String response = "";
 		System.out.println("What do you need to get? (Pair,Trips,Straight,Flush,Full,Quads,SF,RF)");
-		response = scan.next();
-		System.out.println("Or Better?");
-		boolean orBetter = scan.next().equals("y") ? true : false;
+		scan.nextLine();
+		response = scan.nextLine();
+		boolean orBetter = false;
+		if (!response.equals("")) {
+			System.out.println("Or Better?");
+			orBetter = scan.next().equals("y") ? true : false;
+		}
 		boolean reached = false;
 		if (response.contains("Pair")) {
 			checkPair(card1, card2);
@@ -96,26 +108,26 @@ public class Hand {
 		}
 	}
 	public static void checkPair(Card card1, Card card2) {
-		stringOuts.add("Pair Outs : ");
+		stringOuts.add("Pair_Outs_______");
 		if (cardValueEqual(card1, card2)) {return;} 
 		else {
 			for (int i = 0; i < 52; i++) {
 				if (cardValueEqual(cards[i], card1) || cardValueEqual(cards[i], card2)) {
-					addOut(cards[i]);
+					addOut(cards[i], pairOuts);
 				}
 			}
 		}
 	}
 	public static void checkThree(Card card1, Card card2) {
-		stringOuts.add("Trip Outs : ");
+		stringOuts.add("Trip_Outs_______");
 		for (int i = 0; i < 52; i++) {
 			if (cardValueEqual(cards[i], card1) || cardValueEqual(cards[i], card2)) {
-				addOut(cards[i]);
+				addOut(cards[i], tripOuts);
 			}
 		}
 	}
 	public static void checkStraight(Card card1, Card card2) {
-		stringOuts.add("Straight Outs : ");
+		stringOuts.add("Straight_Outs___");
 		Card[] current = {card1, card2};
 		for (Card car : current) {
 			int val = car.toInt();
@@ -125,11 +137,11 @@ public class Hand {
 				}
 				for (int j = (0 - 4); j < 5; j++) {
 					if (cardValueEqual(cards[i], val + j)) {
-						addOut(cards[i]);
+						addOut(cards[i], straightOuts);
 					}
 					if (val == 14) {
 						if (cardValueEqual(cards[i], 1 + j)) {
-							addOut(cards[i]);
+							addOut(cards[i], straightOuts);
 						}
 					}
 				}
@@ -137,33 +149,33 @@ public class Hand {
 		}
 	}
 	public static void checkFlush(Card card1, Card card2) {
-		stringOuts.add("Flush Outs : ");
+		stringOuts.add("Flush_Outs______");
 		Card[] current = {card1, card2};
 		for (Card car : current) {
 			for (int i = 0; i < 52; i++) {
 				if (cardSuitEqual(cards[i], car)) {
-					addOut(cards[i]);
+					addOut(cards[i], flushOuts);
 				}
 			}
 		}
 	}
 	public static void checkFull(Card card1, Card card2) {
-		stringOuts.add("Full House Outs : ");
+		stringOuts.add("Full_House_Outs_");
 
 
 	}
 	public static void checkFour(Card card1, Card card2) {
-		stringOuts.add("Quads Outs : ");
+		stringOuts.add("Quad_Outs_______");
 
 
 	}
 	public static void checkStraightFlush(Card card1, Card card2) {
-		stringOuts.add("Straight Flush Outs : ");
+		stringOuts.add("Strat_Flush_Outs");
 
 
 	}
 	public static void checkRoyalFlush(Card card1, Card card2) {
-		stringOuts.add("Royal Flush Outs : ");
+		stringOuts.add("Royal_Flush_Outs");
 
 
 	}
@@ -199,12 +211,13 @@ public class Hand {
 		}
 	}
 	public static void printOuts() {
-		System.out.println("Outs : " + outs.size());
+		System.out.println("Outs : " + (pairOuts.size() + tripOuts.size() + straightOuts.size() + flushOuts.size() 
+				+ fullOuts.size() + quadOuts.size() + straightFlushOuts.size() + royalFlushOuts.size()));
 		for (int i = 0; i < stringOuts.size(); i++) {
 			System.out.println(stringOuts.get(i));
 		}
 	}
-	public static void addOut(Card card1) {
+	public static void addOut(Card card1, ArrayList<Card> outs) {
 		for (int i = 0; i < outs.size(); i++) {
 			if (cardsEqual(outs.get(i), card1)) {return;}
 		}
@@ -214,7 +227,6 @@ public class Hand {
 	public static String outsToString(Card card1) {
 		String val = card1.value.toString();
 		String sui = card1.suit.toString();
-		int tot = val.length() + sui.length();
 		while (val.length() < 6) {
 			val += " ";
 		}
