@@ -3,7 +3,6 @@ import java.util.Scanner;
 
 public class Hand {
 	static ArrayList<Player> players = new ArrayList<Player>();
-	static ArrayList<Card> outs = new ArrayList<Card>();
 	static ArrayList<Card> pairOuts = new ArrayList<Card>();
 	static ArrayList<Card> tripOuts = new ArrayList<Card>();
 	static ArrayList<Card> straightOuts = new ArrayList<Card>();
@@ -15,6 +14,7 @@ public class Hand {
 	static ArrayList<String> stringOuts = new ArrayList<String>();
 	static Card[] cards = new Card[52];
 	static Card[] board = new Card[5];
+	static Card[] hand = new Card[2];
 	static final Value[] VALUES = Value.values();
 	static final Suit[] SUITS = Suit.values();
 	static Scanner scan = new Scanner(System.in);
@@ -26,6 +26,21 @@ public class Hand {
 		//System.out.print("\nBig Blind? : ");
 		//BigBlind = scan.nextInt();
 
+		preFlop();
+		flop();
+		turn();
+		river();
+
+		scan.close();
+	}
+	public static void nullCards(Card card1) {
+		for (int i = 0; i < 52; i++) {
+			if (cardsEqual(cards[i], card1)) {
+				cards[i] = null;
+			}
+		}
+	}
+	public static void preFlop() {
 		System.out.println("Enter First Card : ");
 		String value1 = scan.next();
 		String suit1 = scan.next();
@@ -39,31 +54,53 @@ public class Hand {
 		nullCards(myCard1);
 		nullCards(myCard2);
 
-		check(myCard1, myCard2);
+		hand[0] = myCard1;
+		hand[1] = myCard2;
+		
+		check();
+	}
+	public static void flop() {
+		System.out.println("Enter First Flop Card : ");
+		String value1 = scan.next();
+		String suit1 = scan.next();
+		Card flopCard1 = new Card(convertToValue(value1), convertToSuit(suit1));
+		board[0] = flopCard1;
 
-		printOuts();
-		scan.close();
-	}
-	public static void nullCards(Card card1) {
-		for (int i = 0; i < 52; i++) {
-			if (cardsEqual(cards[i], card1)) {
-				cards[i] = null;
-			}
-		}
-	}
-	public void actions() {
+		System.out.println("Enter Second Flop Card : ");
+		String value2 = scan.next();
+		String suit2 = scan.next();
+		Card flopCard2 = new Card(convertToValue(value2), convertToSuit(suit2));
+		board[1] = flopCard2;
 
+		System.out.println("Enter Third Flop Card : ");
+		String value3 = scan.next();
+		String suit3 = scan.next();
+		Card flopCard3 = new Card(convertToValue(value3), convertToSuit(suit3));
+		board[2] = flopCard3;
+		
+		check();
 	}
-	public void flop(Card card1, Card card2, Card card3) {
-
+	public static void turn() {
+		System.out.println("Enter Turn Card : ");
+		String value1 = scan.next();
+		String suit1 = scan.next();
+		Card turnCard = new Card(convertToValue(value1), convertToSuit(suit1));
+		board[3] = turnCard;
+		
+		check();
 	}
-	public void turn(Card card4) {
-
+	public static void river() {
+		System.out.println("Enter River Card : ");
+		String value1 = scan.next();
+		String suit1 = scan.next();
+		Card riverCard = new Card(convertToValue(value1), convertToSuit(suit1));
+		board[4] = riverCard;
+		
+		finalHand();
 	}
-	public void river(Card card5) {
-
-	}
-	public static void check(Card card1, Card card2) {
+	public static void check() {
+		Card card1 = hand[0];
+		Card card2 = hand[1];
 		String response = "";
 		System.out.println("What do you need to get? (Pair,Trips,Straight,Flush,Full,Quads,SF,RF)");
 		scan.nextLine();
@@ -106,14 +143,26 @@ public class Hand {
 			checkRoyalFlush(card1, card2);
 			reached = true;
 		}
+		printOuts();
 	}
 	public static void checkPair(Card card1, Card card2) {
 		stringOuts.add("Pair_Outs_______");
+		Card[] cards = {card1, card2};
+		boolean match = false;
 		if (cardValueEqual(card1, card2)) {return;} 
 		else {
-			for (int i = 0; i < 52; i++) {
-				if (cardValueEqual(cards[i], card1) || cardValueEqual(cards[i], card2)) {
-					addOut(cards[i], pairOuts);
+			for (Card card : cards) {
+				for (int i = 0; i < 5; i++) {
+					if (card.equals(board[i])) {
+						match = true;
+					}
+				}
+				if (!match) {
+					for (int i = 0; i < 52; i++) {
+						if (cardValueEqual(cards[i], card)) {
+							addOut(cards[i], pairOuts);
+						}
+					}
 				}
 			}
 		}
@@ -204,6 +253,9 @@ public class Hand {
 
 	}
 	public static void initCards() {
+		for (int i = 0; i < 5; i++) {
+			board[i] = null;
+		}
 		for (int i = 0; i < 13; i++) {
 			for (int j = 0; j < 4; j++) {
 				cards[(i * 4) + j] = new Card(VALUES[i], SUITS[j]);
@@ -309,12 +361,8 @@ public class Hand {
 			return false;
 		}
 	}
+	private static void finalHand() {
+		
+	}
 }
-
-/*
- * 		for (int i = 0; i < 52; i++) {
-			System.out.print(cards[i].value.toString());
-			System.out.println(cards[i].suit.toString());
-		}
- */
 
