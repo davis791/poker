@@ -56,7 +56,7 @@ public class Hand {
 
 		hand[0] = myCard1;
 		hand[1] = myCard2;
-		
+
 		check();
 	}
 	public static void flop() {
@@ -64,20 +64,23 @@ public class Hand {
 		String value1 = scan.next();
 		String suit1 = scan.next();
 		Card flopCard1 = new Card(convertToValue(value1), convertToSuit(suit1));
+		nullCards(flopCard1);
 		board[0] = flopCard1;
 
 		System.out.println("Enter Second Flop Card : ");
 		String value2 = scan.next();
 		String suit2 = scan.next();
 		Card flopCard2 = new Card(convertToValue(value2), convertToSuit(suit2));
+		nullCards(flopCard2);
 		board[1] = flopCard2;
 
 		System.out.println("Enter Third Flop Card : ");
 		String value3 = scan.next();
 		String suit3 = scan.next();
 		Card flopCard3 = new Card(convertToValue(value3), convertToSuit(suit3));
+		nullCards(flopCard3);
 		board[2] = flopCard3;
-		
+
 		check();
 	}
 	public static void turn() {
@@ -85,8 +88,9 @@ public class Hand {
 		String value1 = scan.next();
 		String suit1 = scan.next();
 		Card turnCard = new Card(convertToValue(value1), convertToSuit(suit1));
+		nullCards(turnCard);
 		board[3] = turnCard;
-		
+
 		check();
 	}
 	public static void river() {
@@ -94,8 +98,9 @@ public class Hand {
 		String value1 = scan.next();
 		String suit1 = scan.next();
 		Card riverCard = new Card(convertToValue(value1), convertToSuit(suit1));
+		nullCards(riverCard);
 		board[4] = riverCard;
-		
+
 		finalHand();
 	}
 	public static void check() {
@@ -144,16 +149,17 @@ public class Hand {
 			reached = true;
 		}
 		printOuts();
+		resetOuts();
 	}
 	public static void checkPair(Card card1, Card card2) {
 		stringOuts.add("Pair_Outs_______");
-		Card[] cards = {card1, card2};
-		boolean match = false;
+		Card[] testCards = {card1, card2};
 		if (cardValueEqual(card1, card2)) {return;} 
 		else {
-			for (Card card : cards) {
+			for (Card card : testCards) {
+				boolean match = false;
 				for (int i = 0; i < 5; i++) {
-					if (card.equals(board[i])) {
+					if (cardValueEqual(card, board[i])) {
 						match = true;
 					}
 				}
@@ -169,9 +175,30 @@ public class Hand {
 	}
 	public static void checkThree(Card card1, Card card2) {
 		stringOuts.add("Trip_Outs_______");
-		for (int i = 0; i < 52; i++) {
-			if (cardValueEqual(cards[i], card1) || cardValueEqual(cards[i], card2)) {
-				addOut(cards[i], tripOuts);
+		Card[] testCards = {card1, card2};
+		boolean match = false;
+		for (int i = 0; i < 5; i++) {
+			if (cardValueEqual(card1, card2) && cardValueEqual(card1, board[i])) {
+				match = true;
+			}
+		}
+		if (!match) {
+			for (Card card : testCards) {
+				boolean test = false;
+				for (int i = 0; i < 5; i++) {
+					for (int j = 0; j < 5; j++) {
+						if (cardValueEqual(board[i], board[j]) && cardValueEqual(board[i], card) && (j != i)) {
+							test = true;
+						}
+					}
+				}
+				if (!test) {
+					for (int i = 0; i < 52; i++) {
+						if (cardValueEqual(cards[i], card) || cardValueEqual(cards[i], card)) {
+							addOut(cards[i], tripOuts);
+						}
+					}
+				}
 			}
 		}
 	}
@@ -227,6 +254,17 @@ public class Hand {
 		stringOuts.add("Royal_Flush_Outs");
 
 
+	}
+	public static void resetOuts() {
+		pairOuts = new ArrayList<Card>();
+		tripOuts = new ArrayList<Card>();
+		straightOuts = new ArrayList<Card>();
+		flushOuts = new ArrayList<Card>();
+		fullOuts = new ArrayList<Card>();
+		quadOuts = new ArrayList<Card>();
+		straightFlushOuts = new ArrayList<Card>();
+		royalFlushOuts = new ArrayList<Card>();
+		stringOuts = new ArrayList<String>();
 	}
 	public static void initPlayers() {
 		int playerAmount = 0;
@@ -315,7 +353,7 @@ public class Hand {
 		}
 	}
 	public static boolean cardValueEqual(Card test, Card card1) {
-		if (test == null && card1 != null) {
+		if (test == null || card1 == null) {
 			return false;
 		}
 		Value testVal = test.value;
@@ -362,7 +400,7 @@ public class Hand {
 		}
 	}
 	private static void finalHand() {
-		
+
 	}
 }
 
