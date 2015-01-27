@@ -237,12 +237,25 @@ public class Hand {
 	}
 	public static void checkFull(Card card1, Card card2) {
 		stringOuts.add("Full_House_Outs_");
-
-
+		Card[] current = {card1, card2};
+		for (Card car : current) {
+			for (int i = 0; i < 52; i++) {
+				if (cardValueEqual(cards[i], car)) {
+					addOut(cards[i], fullOuts);
+				}
+			}
+		}
 	}
 	public static void checkFour(Card card1, Card card2) {
 		stringOuts.add("Quad_Outs_______");
-
+		Card[] current = {card1, card2};
+		for (Card car : current) {
+			for (int i = 0; i < 52; i++) {
+				if (cardValueEqual(cards[i], car)) {
+					addOut(cards[i], quadOuts);
+				}
+			}
+		}
 
 	}
 	public static void checkStraightFlush(Card card1, Card card2) {
